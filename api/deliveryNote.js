@@ -35,10 +35,10 @@ export const saveInventoryInfo = (data) => {
 @description获取待盘点库位信息
 *作用： 获取待盘点库位信息
  */
-export const getLocationList = (data) => {
+export const getPdTaskList = (data) => {
 	console.log("getLocationList入参：" + JSON.stringify(data));
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetLocationList',
+		url: domian + 'common/wms_Server_Data.asp?action=GetPdTaskList',
 		type: "POST",
 		dataType: "JSON",
 		data: data

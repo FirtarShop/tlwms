@@ -17,7 +17,7 @@
 					</view>
 				</view>
 				</view>
-			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认出库</button>
+			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认收货</button>
 			<button type="primary" v-show="currentSteps == 2" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
@@ -42,7 +42,7 @@ export default {
 					title: '扫拣货码'
 				},
 				{
-					title: '出库完成'
+					title: '收货完成'
 				}
 			]
 		};

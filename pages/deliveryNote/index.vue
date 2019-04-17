@@ -94,7 +94,7 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result && result.codeid && result.codeid != '') {
-						getLocalMateInfo(result.codeid,this.userName,this.password,this.userID).then(data => {
+						getLocalMateInfo(result.codeid,_this.userName,_this.password,_this.userID).then(data => {
 							var [error, res] = data;
 							console.log('getLocalMateInfo.data:' + JSON.stringify(data));
 							console.log('getLocalMateInfo.res:' + JSON.stringify(res));

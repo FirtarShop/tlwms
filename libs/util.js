@@ -98,9 +98,11 @@ export const addUserParam = (data,userName,password,userID) =>{
 	console.log("addUserParam.userID:"+userID);
 	var result=false;//默认不是是对象
 	try{
-		for (var i in data) {
+		if((typeof data=='string')&&data.constructor==String){
+			result=false;
+		}
+		else{
 			result=true;
-			break;
 		}
 	}catch(e){
 		result=false;

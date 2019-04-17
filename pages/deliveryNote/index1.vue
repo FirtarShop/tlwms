@@ -2,16 +2,14 @@
 	<view style="width: 100%;">
 		<view class="uni-padding-wrap uni-common-mt">
 			<view v-show="data.length > 0" class="wxc-card">
-				<view class="wxc-card_list" v-for="item in data" v-bind:key="item.LocalID">
+				<view class="wxc-card_list" v-for="item in data" v-bind:key="item.RegionName">
 					<view class="wxc-card_list_header">
-						<view class="wxc-card_list_header_title">{{ item.LocalID }}</view>
-						<view class="wxc-card_list_header_extra">{{ item.RackCode }}</view>
-						<view class="wxc-card_list_header_extra1">{{ item.LocalName }}</view>
+						<view class="wxc-card_list_header_title">区域名称:{{ item.RegionName }}</view>
+						<view class="wxc-card_list_header_title">库位名称:{{ item.LocalName }}</view>
 					</view>
 					<view class="wxc-card_list_content">
-						<view class="wxc-card_list_content_text">冻结标志:{{ item.FreezeFlag }}</view>
-						<view class="wxc-card_list_content_text">货架ID:{{ item.RackID }}</view>
-						<view class="wxc-card_list_content_text">库位状态:{{ item.LocalState }}</view>
+						<view class="wxc-card_list_header_extra1">物料编码:{{ item.MNumber }}</view>
+						<view class="wxc-card_list_header_extra1">物料名称:{{ item.MName }}</view>
 					</view>
 				</view>
 				<view>
@@ -24,14 +22,19 @@
 </template>
 
 <script>
-import { addUserParam,parseForRule, authAccount,isEmptyObject } from '@/libs/util.js';
-import { getLocationList } from '@/api/deliveryNote.js';
+import { addUserParam, parseForRule, authAccount, isEmptyObject } from '@/libs/util.js';
+import { getPdTaskList } from '@/api/deliveryNote.js';
 import { mapState } from 'vuex';
 export default {
+	// {"PdFlag":1,"pageSize":20,"pageIndex":0,"sortField":"LocalName","sortOrder":"asc","UserName":"admin","Password":"admin123","UserID":1}
 	data() {
 		return {
 			total: 0,
-			PdFlag: 1, //查询物料编码
+			FreezeFlag: '',
+			RegionID: '',
+			LocalID: '',
+			LocalName: '',
+			PdFlag: 0, //查询物料编码
 			pageSize: 20, //分页
 			pageIndex: 0, //当前页码
 			sortField: 'LocalName', //排序字段
@@ -41,6 +44,10 @@ export default {
 	},
 	created() {
 		this.total = 0;
+		this.FreezeFlag = '';
+		this.RegionID = '';
+		this.LocalID = '';
+		this.LocalName = '';
 		this.PdFlag = 1;
 		this.pageSize = 20;
 		this.pageIndex = 0;
@@ -50,7 +57,7 @@ export default {
 		this.sureQuery();
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
 		isNext() {
 			if (this.total > this.data.length) {
 				return true;
@@ -63,13 +70,13 @@ export default {
 		//确定查询
 		sureQuery: function() {
 			var _this = this;
-			getLocationList(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
+			getPdTaskList(addUserParam(this.generateModel(), this.userName, this.password, this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('getLocationList.data:' + JSON.stringify(data));
 				console.log('getLocationList.res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
 				console.log('getLocationList.result:' + JSON.stringify(result));
-				if (result &&!isEmptyObject(result)) {
+				if (result && !isEmptyObject(result)) {
 					_this.addDeliveryNoteModel(result);
 				} else {
 					uni.showModal({
@@ -102,6 +109,10 @@ export default {
 			this.PdFlag = 1;
 			this.pageSize = 20;
 			this.pageIndex = 0;
+			this.FreezeFlag = '';
+			this.RegionID = '';
+			this.LocalID = '';
+			this.LocalName = '';
 			this.sortField = 'LocalName';
 			this.sortOrder = 'asc';
 			this.data = [];
@@ -121,6 +132,10 @@ export default {
 			model.pageIndex = this.pageIndex;
 			model.sortField = this.sortField;
 			model.sortOrder = this.sortOrder;
+			model.FreezeFlag = this.FreezeFlag;
+			model.RegionID = this.RegionID;
+			model.LocalID = this.LocalID;
+			model.LocalName = this.LocalName;
 			return model;
 		}
 	},

@@ -163,7 +163,7 @@ export default {
 							success: function(res) {
 								console.log('res' + JSON.stringify(res));
 								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-									getPickGoodsCodeInfo(res.result).then(data => {
+									getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
 										var [error, res] = data;
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));

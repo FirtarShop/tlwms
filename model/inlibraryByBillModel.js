@@ -13,6 +13,7 @@ function storageModel() {
  *案例：{BarCID:'484',BillNum:'ASN2019320-1',BzBarCode:'TMLSHZL2019320-484',MNumber:'1001030001-B12',MName:'后悬置总成',InPackage:'12',BzQty:'12',IsScan:'1'}
  */
 function packageModel(option) {
+	
 	this.BzBarCode = ""; //对应ID号	
 	this.BillNum = ""; //送货单
 	this.BzBarCode = ""; //条码内容
@@ -103,6 +104,21 @@ const inlibraryModel = {
 		this.packages.push(new packageModel(data));
 		return true;
 	},
+		//修改数量
+	modifierNumber: function(index, number) {
+		console.log("当前索引："+index);
+		console.log("当前数字："+number);
+		try{
+			var adds=(number - this.packages[index].BzQty);
+			console.log("相加的值："+adds);
+			this.totalAmount =this.totalAmount+adds; //物料总数
+		    this.packages[index].BzQty = number;
+	        console.log("改变值后的totalAmount："+this.totalAmount)
+		}catch(e){
+			console.log("异常："+JSON.stringify(e));
+		}
+		console.log("新的值："+this.packages[index].BzQty );
+	},
 	//物料入库
 	addStorage: function(data) {
 		if (!data || !data.id || data.id == "") {
@@ -118,6 +134,7 @@ const inlibraryModel = {
 	generateModel() {
 		console.log("this:"+JSON.stringify(this));
 		var tempBzBarCodes = "";
+		var BzQtys="";
 		var model = new Object();
 		model.BillNum = this.BillNum;
 		model.MNumber = this.MNumber;
@@ -131,8 +148,14 @@ const inlibraryModel = {
 		} else {
 			model.BzBarCodes = "";
 		}
+		
+		
+		for (let item of this.packages) {
+			BzQtys = BzQtys + item.BzQty + "|";
+		}
+		model.BzQtys = BzQtys.trim("").substr(0, BzQtys.length - 1);
 		var result="";
-		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes;
+		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes+"&BzQtys="+model.BzQtys;
 		return result;
 	}
 };

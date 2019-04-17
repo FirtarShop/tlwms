@@ -5,7 +5,7 @@
 			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanPackege"><text>扫描拣货码</text></button>
 			<button type="primary" v-bind:disabled="!scanVehicles" v-on:click="scanVehicle"><text>扫描车辆码</text></button>
 			<view v-if="materials.materials.length > 0">
-				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.BillNum">
+				<view class="uni-card" v-for=" (material, index)  in materials.materials" v-bind:key="material.BillNum">
 					<view class="">
 						<view class="wxc-list-extra">需求单号:{{ material.OperBillNum }}</view>
 						<view class="wxc-list-extra">条码内容:{{ material.BillNum }}</view>
@@ -17,6 +17,7 @@
 					</view>
 					<view class="uni-card__footer">
 						<text>生成装车单:{{ materials.vehicleCode }}</text>
+					<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="removeMaterials(index)">删除</span>
 					</view>
 				</view>
 			</view>
@@ -81,6 +82,9 @@ export default {
 		}
 	},
 	methods: {
+		removeMaterials:function(index){
+			this.materials.materials.splice(index, 1);
+		},
 		//扫描拣货码
 		scanPackege: function(res) {
 			if (this.isCanOutlibrary) {
@@ -152,7 +156,7 @@ export default {
 							success: function(res) {
 								console.log('res' + JSON.stringify(res));
 								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-									getPickGoodsCodeInfo(res.result).then(data => {
+									getPickGoodsCodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
 										var [error, res] = data;
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));

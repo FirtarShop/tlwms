@@ -11,12 +11,13 @@
 						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
-						<view v-for="item in material.packages" v-bind:key="item.BzBarCode" class="wxc-list">
+						<view v-for="(item, index) in material.packages" v-bind:key="index" class="wxc-list">
 							<view class="wxc-list-title-text">
 								{{ item.BzBarCode }}
 								<!-- <text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage!=null">{{material.storage.code}}</text> -->
 							</view>
 							<view class="wxc-list-extra-text">{{ item.BzQty }}</view>
+							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
 						</view>
 						<view class="wxc-list" style="color: #0FAEFF;">
 							<view class="wxc-list-title-text">
@@ -33,9 +34,14 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认入库</button>
-			<!-- 	<button type="primary"  @click="logMessage">
-				浏览器打印
-			</button> -->
+			<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">
+						请输入个数
+						<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
+					</view>
+				</view>
+			</neil-modal>
 		</view>
 	</view>
 </template>
@@ -43,7 +49,8 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/inlibraryByBillModel.js';
-import {addUserParam, authAccount, parseForRule, parseWarehouseCode,isEmptyObject} from '@/libs/util.js';
+import neilModal from '@/components/neil-modal/neil-modal.vue';
+import { addUserParam, authAccount, parseForRule, parseWarehouseCode, isEmptyObject } from '@/libs/util.js';
 import { checkLocal, getDeliBillBarcodeInfo, savePutInByDeliBill } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -51,6 +58,9 @@ export default {
 		return {
 			material: inlibraryModel,
 			currentSteps: 0, //当前执行步骤，
+			currentIndex: 0, //当前需要修改数量的货物索引
+			show: false,
+			inputNumber: 12,
 			steps: [
 				{
 					title: '扫物包装码'
@@ -65,17 +75,18 @@ export default {
 		};
 	},
 	created() {
-		this.currentSteps=0;
+		this.currentSteps = 0;
 		this.material.reset();
 	},
 	components: {
 		uniSteps,
+		neilModal,
 		uniCard,
 		uniList,
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
 		sureInlibrarys() {
 			if (this.currentSteps == 2) {
 				return true;
@@ -93,13 +104,13 @@ export default {
 				success: function(res) {
 					console.log('res' + JSON.stringify(res));
 					if (res && res.result && res.result != '' && res.result.indexOf('TML') != '-1') {
-						getDeliBillBarcodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
+						getDeliBillBarcodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
 							var [error, res] = data;
 							console.log('getDeliBillBarcodeInfo.data:' + JSON.stringify(data));
 							console.log('getDeliBillBarcodeInfo.res:' + JSON.stringify(res));
 							var result = parseForRule(res.data);
 							console.log('result:' + JSON.stringify(result));
-							if (result &&!isEmptyObject(result)) {
+							if (result && !isEmptyObject(result)) {
 								_this.setPackege(result);
 							} else {
 								uni.showModal({
@@ -134,7 +145,7 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					if (result && result.codeid && result.codeid != '') {
-						checkLocal(_this.material.MNumber, result.codeid,_this.userName,_this.password,_this.userID).then(data => {
+						checkLocal(_this.material.MNumber, result.codeid, _this.userName, _this.password, _this.userID).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal.data:' + JSON.stringify(data));
 							console.log('checkLocal.res:' + JSON.stringify(res));
@@ -176,7 +187,7 @@ export default {
 		//确定入库
 		sureInlibrary: function(res) {
 			var _this = this;
-			savePutInByDeliBill(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
+			savePutInByDeliBill(addUserParam(this.material.generateModel(), this.userName, this.password, this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
@@ -187,17 +198,17 @@ export default {
 					_this.currentSteps = 3;
 					uni.showToast({
 						icon: 'success',
-						title: "入库成功"
+						title: '入库成功'
 					});
 				} else {
 					uni.showModal({
 						title: '提示',
-						showCancel:false,
+						showCancel: false,
 						content: result.ResponseText,
 						success: function(res) {
 							if (res.confirm) {
 								console.log('用户点击确定');
-							} 
+							}
 						}
 					});
 				}
@@ -206,10 +217,10 @@ export default {
 		//设置包装码信息
 		setPackege: function(data) {
 			if (this.material.judgePackege(data)) {
-				if(this.material.judgeCommonPackege(data)){
+				if (this.material.judgeCommonPackege(data)) {
 					uni.showModal({
 						title: '提示',
-						content: data.BzBarCode+"包装码已经扫描过！",
+						content: data.BzBarCode + '包装码已经扫描过！',
 						showCancel: false,
 						success: function(res) {
 							if (res.confirm) {
@@ -217,8 +228,7 @@ export default {
 							}
 						}
 					});
-				}
-				else{
+				} else {
 					this.material.addPackege(data);
 					this.currentSteps = 1;
 				}
@@ -237,6 +247,32 @@ export default {
 		},
 		logMessage: function() {
 			debugger;
+		},
+		modification: function(index) {
+			console.log('index:' + index);
+			try {
+				console.log(this.inputNumber)
+				this.inputNumber = this.material.packages[index];
+				this.currentIndex = index;
+				this.show = true;
+			} catch (e) {
+				console.log('异常：' + JSON.stringify(e));
+			}
+
+			console.log('modification:end');
+		},
+		//关闭弹框事件
+		closeModificationModal: function(data) {
+			this.show = false;
+		},
+		modifierNumber: function(ref) {
+			console.log('修改后的值：' + this.inputNumber);
+			try {
+				this.material.modifierNumber(this.currentIndex, this.inputNumber);
+			} catch (e) {
+				console.log('异常：' + JSON.stringify(e));
+			}
+			this.show = false;
 		}
 	},
 

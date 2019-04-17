@@ -3,8 +3,8 @@
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫码物料码</text></button>
-			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码库位码</text></button>
-			<button type="primary" v-bind:disabled="currentSteps != 2" v-on:click="scanWarehouses"><text>扫码库位码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码出库库位码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 2" v-on:click="scanWarehouses"><text>扫码入库库位码</text></button>
 			<view v-if="material.id.length > 0">
 				<view class="uni-card">
 					<view class="uni-card__header">
@@ -56,10 +56,10 @@ export default {
 					title: '扫物料码'
 				},
 				{
-					title: '扫库位码'
+					title: '扫出库库位码'
 				},
 				{
-					title: '扫物料码'
+					title: '扫入库库位码'
 				},
 				{
 					title: '移库完成'
