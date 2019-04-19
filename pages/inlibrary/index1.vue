@@ -34,6 +34,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认入库</button>
+			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
 			<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
 				<view style="min-height: 90upx;padding: 32upx 24upx;">
 					<view style="text-align: center;">
@@ -93,7 +94,14 @@ export default {
 			} else {
 				return false;
 			}
-		}
+		},
+			isReseatPage() {
+			if (this.currentSteps == 3) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 	},
 	methods: {
 		//扫描包装码
@@ -248,6 +256,12 @@ export default {
 		logMessage: function() {
 			debugger;
 		},
+		//继续扫描
+		resetPage:function(){
+			this.currentSteps = 0;
+			this.material.reset();
+		},
+		
 		modification: function(index) {
 			console.log('index:' + index);
 			try {

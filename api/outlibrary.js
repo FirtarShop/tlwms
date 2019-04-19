@@ -66,3 +66,18 @@ export const bulidFcd = (data) => {
 		data:data
 	});
 }
+
+/**
+    装车前检查拣货码是否完成出库
+    用于在出库管理—生成装车单界面调用该接口
+	扫描拣货码时判断当前拣货码是否完成出库。
+ */
+export const checkPickGoodsCode = (BillNum,userName,password,userID) => {
+	console.log("checkPickGoodsCode入参BillNum：" + BillNum);
+	console.log("checkPickGoodsCode入参userName：" + userName);
+	console.log("checkPickGoodsCode入参password：" + password);
+	console.log("checkPickGoodsCode入参userID：" + userID);
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=CheckPickGoodsCode'+"&BillNums="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
+	});
+}

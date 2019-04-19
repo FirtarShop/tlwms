@@ -33,7 +33,8 @@
 				</view>
 			</view>
 			<button type="primary" @click="updateAmount" v-bind:disabled="!sureUpdateAmount">确认盘点库存</button>
-			<button type="default" @click="goBack">返回</button>
+			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
+		<!-- 	<button type="default" @click="goBack">返回</button> -->
 		</view>
 	</view>
 </template>
@@ -65,9 +66,28 @@ export default {
 			} else {
 				return false;
 			}
-		}
+		},
+		//是否重置页面
+			isReseatPage() {
+				if (this.currentSteps == 2) {
+					return true;
+				} else {
+					return false;
+				}
+			},
 	},
 	methods: {
+		//初始化拣货码信息
+		initPackege: function() {
+			this.currentSteps = 0;
+			this.LocalID = '';
+			this.MName = '';
+			this.MNumber = '';
+			this.LocalName = '';
+			this.SupplyName = '';
+			this.InDate = '';
+			this.EndQuan = '';
+		},
 		//设置货架物料信息
 		setStorageInfo: function(data) {
 			try {
@@ -75,7 +95,6 @@ export default {
 				this.LocalName = data.LocalName;
 				this.MNumber = data.MNumber;
 				this.MName = data.MName;
-				this.LocalName = data.LocalName;
 				this.SupplyName = data.SupplyName;
 				this.InDate = data.InDate;
 				this.EndQuan = data.EndQuan;
@@ -167,6 +186,13 @@ export default {
 		//返回
 		goBack: function() {
 			uni.navigateBack();
+		},
+		resetPage: function() {
+			console.log("123")
+			if (this.updateAmount) {
+				var _this = this;
+		         _this.initPackege();
+			}
 		},
 	},
 	onLoad() {

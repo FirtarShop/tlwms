@@ -13,8 +13,6 @@ function storageModel() {
  *案例：{BarCID:'484',BillNum:'ASN2019320-1',BzBarCode:'TMLSHZL2019320-484',MNumber:'1001030001-B12',MName:'后悬置总成',InPackage:'12',BzQty:'12',IsScan:'1'}
  */
 function packageModel(option) {
-	
-	this.BzBarCode = ""; //对应ID号	
 	this.BillNum = ""; //送货单
 	this.BzBarCode = ""; //条码内容
 	this.MNumber = ""; //当前物料编码
@@ -23,7 +21,6 @@ function packageModel(option) {
 	this.BzQty = ""; //当前包装数量
 	this.IsScan = ""; //当前条码是否扫描标志 1标识已扫描，0标识未扫描
 	this.init = function(option) {
-		this.BzBarCode = option.BzBarCode; //对应ID号	
 		this.BillNum = option.BillNum; //送货单
 		this.BzBarCode = option.BzBarCode; //条码内容
 		this.MNumber = option.MNumber; //当前物料编码
@@ -91,7 +88,7 @@ const inlibraryModel = {
 		console.log("judgeCommonPackege结果："+result)
 		return result;
 	},
-	//设置物料信息
+	//设置包装码信息
 	addPackege: function(data) {
 		if (!data || !data.BillNum || data.BillNum == "") {
 			return false;

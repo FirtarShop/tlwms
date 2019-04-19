@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps > 1" v-on:click="scanMaterial"><text>扫码物料码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 0" v-on:click="scanMaterial"><text>扫码物料码</text></button>
 			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码出库库位码</text></button>
 			<button type="primary" v-bind:disabled="currentSteps != 2" v-on:click="scanWarehouses"><text>扫码入库库位码</text></button>
 			<view v-if="material.id.length > 0">
@@ -14,14 +14,14 @@
 					<view class="uni-card__content uni-card__content--pd">
 						<view class="wxc-list">
 							<view class="wxc-list-title-text">
-							出库货架
+								出库货架
 								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.storage != null">{{ material.storage.code }}</text>
 							</view>
 						</view>
 						<view class="wxc-list">
 							<view class="wxc-list-title-text">
-							移库货架
-						<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.inStorage != null">{{ material.inStorage.code }}</text>
+								移库货架
+								<text style="color: #0FAEFF;margin-left: 4px;" v-if="material.inStorage != null">{{ material.inStorage.code }}</text>
 							</view>
 						</view>
 					</view>
@@ -43,7 +43,7 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/moveInlibraryModel.js';
-import { addUserParam,authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { addUserParam, authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
 import { checkLocal, saveMateMoveInfo } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
@@ -78,7 +78,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
 		sureInlibrarys() {
 			if (this.currentSteps == 3) {
 				return true;
@@ -141,36 +141,16 @@ export default {
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
 					console.log('checkLocal.data:' + JSON.stringify(_this.material.code));
-					if (result && result.codeid && result.codeid != ''&&result.code!=_this.material.code) {
-						checkLocal(_this.material.code, result.codeid,_this.userName,_this.password,_this.userID).then(data => {
-							var [error, res] = data;
-							console.log('checkLocal.data:' + JSON.stringify(data));
-							console.log('checkLocal.res:' + JSON.stringify(res));
-							var checkResult = parseForRule(res.data);
-							console.log('checkResult:' + JSON.stringify(checkResult));
-							if (checkResult.success) {
-								if (_this.material.addStorage(result)) {
-									_this.currentSteps = 2;
-								} else {
-									uni.showToast({
-										icon: 'none',
-										duration: 2500,
-										title: '库位信息错误：' + JSON.stringify(result)
-									});
-								}
-							} else {
-								uni.showModal({
-									title: '提示',
-									content: checkResult.ResponseText,
-									showCancel: false,
-									success: function(res) {
-										if (res.confirm) {
-											console.log('用户点击确定');
-										}
-									}
-								});
-							}
-						});
+					if (result && result.codeid && result.codeid != '') {
+						if (_this.material.addStorage(result)) {
+							_this.currentSteps = 2;
+						} else {
+							uni.showToast({
+								icon: 'none',
+								duration: 2500,
+								title: '库位信息错误：' + JSON.stringify(result)
+							});
+						}
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -181,7 +161,7 @@ export default {
 				}
 			});
 		},
-			//扫描库位码
+		//扫描库位码
 		scanWarehouses: function(res) {
 			var _this = this;
 			uni.scanCode({
@@ -190,8 +170,8 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result && result.codeid && result.codeid != ''&&result.code!=_this.material.code) {
-						checkLocal(_this.material.code, result.codeid,_this.userName,_this.password,_this.userID).then(data => {
+					if (result && result.codeid && result.codeid != '' && result.code != _this.material.code) {
+						checkLocal(_this.material.code, result.codeid, _this.userName, _this.password, _this.userID).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal22.data:' + JSON.stringify(data));
 							console.log('checkLocal22.res:' + JSON.stringify(res));
@@ -230,10 +210,10 @@ export default {
 				}
 			});
 		},
-		//确定入库
+		//确定移库
 		sureInlibrary: function() {
 			var _this = this;
-			saveMateMoveInfo(addUserParam(this.material.generateModel(),this.userName,this.password,this.userID)).then(data => {
+			saveMateMoveInfo(addUserParam(this.material.generateModel(), this.userName, this.password, this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

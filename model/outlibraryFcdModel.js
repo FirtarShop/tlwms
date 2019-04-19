@@ -22,11 +22,6 @@ function pickingModel(option) {
 		this.LocalName = option.LocalName
 		this.Qty = option.Qty;
 	};
-	//设置物料信息
-	// 	this.addGoods = function(data) {
-	// 		this.totalAmount = this.totalAmount + parseInt(data.count);
-	// 		this.goods.push(parseInt(data.count));
-	// 	};
 	if (option) {
 		this.init(option)
 	}

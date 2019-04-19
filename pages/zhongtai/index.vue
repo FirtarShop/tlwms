@@ -18,6 +18,7 @@
 				</view>
 				</view>
 			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认收货</button>
+			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
 			<button type="primary" v-show="currentSteps == 2" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
@@ -72,7 +73,15 @@ export default {
 			} else {
 				return false;
 			}
-		}
+		},
+		//是否重置页面
+		isReseatPage() {
+			if (this.currentSteps == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 	},
 	methods: {
 		//扫描拣货码
@@ -160,7 +169,12 @@ export default {
 		},
 		logMessage: function() {
 			debugger;
-		}
+		},
+		//继续扫描
+		resetPage:function(){
+			this.currentSteps = 0;
+			this.materials.reset();
+		},
 	},
 
 	onLoad() {

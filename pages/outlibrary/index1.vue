@@ -37,7 +37,7 @@
 				</view>
 			</view>
 			<button type="primary" v-show="isShowOutlibrary" v-bind:disabled="!isCanOutlibrary" v-on:click="sureOutlibrary"><text>确定出库</text></button>
-			<button type="default" v-show="isShowOutlibrary" @click="resetPage">重置页面</button>
+			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
 			<!-- 	<button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -52,6 +52,7 @@ import { mapState } from 'vuex';
 export default {
 	data() {
 		return {
+			isShowOutlibrary:false,
 			currentSteps: 0, //当前执行步骤，
 			TlJpdID: '', //拣货码ID号
 			OperBillNum: '', //需求单号
@@ -83,8 +84,9 @@ export default {
 				return false;
 			}
 		},
-		isShowOutlibrary() {
-			if (this.TlJpdID && this.TlJpdID != '') {
+		//是否重置页面
+		isReseatPage() {
+			if (this.currentSteps == 2) {
 				return true;
 			} else {
 				return false;
@@ -126,6 +128,7 @@ export default {
 								if (result && !isEmptyObject(result)) {
 									_this.currentSteps = 1;
 									_this.setPackege(result);
+									_this.isShowOutlibrary=true;
 								} else {
 									uni.showModal({
 										title: '提示',
@@ -168,7 +171,6 @@ export default {
 										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
 										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
-										var result = isEmptyObject(result);
 										console.log('result:' + JSON.stringify(result));
 										if (result && !isEmptyObject(result)) {
 											_this.currentSteps = 1;
@@ -257,18 +259,11 @@ export default {
 		},
 		//重置页面
 		resetPage: function() {
-			if (this.isCanOutlibrary) {
+			console.log("123")
+			if (this.sureOutlibrary) {
 				var _this = this;
-				uni.showModal({
-					title: '提示',
-					content: '是否放弃当前拣货码，重新扫描拣货码',
-					success: function(res) {
-						if (res.confirm) {
-							_this.initPackege();
-						} else if (res.cancel) {
-						}
-					}
-				});
+	             _this.initPackege();
+				 _this.isShowOutlibrary=false;
 			}
 		},
 		logMessage: function() {}
