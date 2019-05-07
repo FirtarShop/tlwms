@@ -9,7 +9,7 @@ const store = new Vuex.Store({
          * 是否需要强制登录
          */
         forcedLogin: true,
-        hasLogin: true,
+        hasLogin: false,
         userName: "",
 		password:"",
 		userID:""
