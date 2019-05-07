@@ -195,7 +195,7 @@ export default {
 		//确定入库
 		sureInlibrary: function(res) {
 			var _this = this;
-			savePutInByDeliBill(addUserParam(this.material.generateModel(), this.userName, this.password, this.userID)).then(data => {
+			savePutInByDeliBill(addUserParam(_this.material.generateModel(), _this.userName, _this.password, _this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));

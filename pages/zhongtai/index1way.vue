@@ -52,7 +52,7 @@ export default {
 				console.log('res' + JSON.stringify(res));
 				uni.navigateTo({ url: '/pages/zhongtai/index1?res=' + res });
 			} else {
-				uni.navigateTo({ url: '/pages/zhongtai/index1' });
+				uni.navigateTo({ url: '/pages/zhongtai/index1'});
 			}
 		}
 	},

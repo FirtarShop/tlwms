@@ -32,6 +32,7 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认移库</button>
+		<!-- 	<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button> -->
 			<button type="primary" v-show="currentSteps == 4" @click="goBack">返回</button>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
@@ -81,6 +82,13 @@ export default {
 		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
 		sureInlibrarys() {
 			if (this.currentSteps == 3) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		isReseatPage() {
+			if (this.currentSteps == 4) {
 				return true;
 			} else {
 				return false;
@@ -243,6 +251,10 @@ export default {
 		//返回
 		goBack: function() {
 			uni.navigateBack();
+		},
+		resetPage: function() {
+			this.currentSteps = 0;
+			this.material.reset();
 		},
 		logMessage: function() {
 			debugger;

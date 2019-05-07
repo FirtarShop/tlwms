@@ -4,7 +4,7 @@
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<button type="primary" v-bind:disabled="!scanMaterials" v-on:click="scanMaterial"><text>扫拣货码</text></button>
 			<view v-if="materials.materials.length > 0">
-			<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.BillNum">
+				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.BillNum">
 					<view class="">
 						<view class="wxc-list-extra">id:{{ material.TlJpdID }}</view>
 						<view class="wxc-list-extra">单号:{{ material.OperBillNum }}</view>
@@ -16,7 +16,7 @@
 						<view class="wxc-list-extra">当前数量:{{ material.Qty }}</view>
 					</view>
 				</view>
-				</view>
+			</view>
 			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认收货</button>
 			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
 			<button type="primary" v-show="currentSteps == 2" @click="goBack">返回</button>
@@ -30,8 +30,8 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import zhongtaiModel from '@/model/zhongtaiModel.js';
-import {addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
-import { getPickGoodsCodeInfo, ZoteRecGoods} from '@/api/zhongtai.js';
+import { addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
+import { getPickGoodsCodeInfo, ZoteRecGoods } from '@/api/zhongtai.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
@@ -59,7 +59,7 @@ export default {
 		uniListItem
 	},
 	computed: {
-		...mapState(['forcedLogin', 'hasLogin', 'userName','password','userID']),
+		...mapState(['forcedLogin', 'hasLogin', 'userName', 'password', 'userID']),
 		sureOutlibrarys() {
 			if (this.currentSteps == 1) {
 				return true;
@@ -67,7 +67,7 @@ export default {
 				return false;
 			}
 		},
-		scanMaterials(){
+		scanMaterials() {
 			if (this.currentSteps == 0) {
 				return true;
 			} else {
@@ -81,60 +81,56 @@ export default {
 			} else {
 				return false;
 			}
-		},
+		}
 	},
 	methods: {
 		//扫描拣货码
 		scanMaterial: function(res) {
-			if (this.isCanOutlibrary) {
-				this.resetScanPackege();
-			} else {
-				var _this = this;
-				uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						console.log('res' + JSON.stringify(res));
-						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-								getPickGoodsCodeInfo(res.result,_this.userName,_this.password,_this.userID).then(data => {
-									console.log('res' + JSON.stringify(res));
-									var [error, res] = data;
-									console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-									console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
-									var result = parseForRule(res.data);
-									console.log('result:' + JSON.stringify(result));
-									if (result && !isEmptyObject(result)) {
-										_this.currentSteps = 1;
-										console.log('测:' + JSON.stringify(result));
-										_this.materials.picking(result);
-									} else {
-										uni.showModal({
-											title: '提示',
-											content: '没有获取到拣货码信息，请检查拣货码',
-											showCancel: false,
-											success: function(res) {
-												if (res.confirm) {
-													console.log('用户点击确定');
-												}
-											}
-										});
+			var _this = this;
+			uni.scanCode({
+				onlyFromCamera: true,
+				success: function(res) {
+					console.log('res' + JSON.stringify(res));
+					if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+						getPickGoodsCodeInfo(res.result, _this.userName, _this.password, _this.userID).then(data => {
+							console.log('res' + JSON.stringify(res));
+							var [error, res] = data;
+							console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+							console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
+							var result = parseForRule(res.data);
+							console.log('result:' + JSON.stringify(result));
+							if (result && !isEmptyObject(result)) {
+								_this.currentSteps = 1;
+								console.log('测:' + JSON.stringify(result));
+								_this.materials.picking(result);
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: '没有获取到拣货码信息，请检查拣货码',
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
 									}
 								});
-							} else {
-								uni.showToast({
-									icon: 'none',
-									duration: 2500,
-									title: '拣货码错误,请重新扫描；'
-								});
 							}
-						}
-				});
-			}
+						});
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '拣货码错误,请重新扫描；'
+						});
+					}
+				}
+			});
 		},
 		//确定出库
 		sureOutlibrary: function(res) {
 			var _this = this;
 			console.log('测:' + JSON.stringify(res));
-			ZoteRecGoods(addUserParam(this.materials.generateModel(),this.userName,this.password,this.userID)).then(data => {
+			ZoteRecGoods(addUserParam(this.materials.generateModel(), this.userName, this.password, this.userID)).then(data => {
 				var [error, res] = data;
 				console.log('data:' + JSON.stringify(data));
 				console.log('res:' + JSON.stringify(res));
@@ -171,10 +167,10 @@ export default {
 			debugger;
 		},
 		//继续扫描
-		resetPage:function(){
+		resetPage: function() {
 			this.currentSteps = 0;
 			this.materials.reset();
-		},
+		}
 	},
 
 	onLoad() {

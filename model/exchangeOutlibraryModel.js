@@ -76,7 +76,7 @@ const exchangeOutlibraryModel = {
 		}catch(e){
 			console.log("异常："+JSON.stringify(e));
 		}
-		console.log("新的值："+this.goods[index] );
+		console.log("新的值："+this.goods[index]);
 	},
 	//生成提交入库model
 	generateModel() {

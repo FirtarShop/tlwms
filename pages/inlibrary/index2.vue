@@ -82,7 +82,7 @@ export default {
 				});
 			} else {
 				var _this = this;
-				ResearchDeliBill(addUserParam(this.generateModel(),this.userName,this.password,this.userID)).then(data => {
+				ResearchDeliBill(addUserParam(_this.generateModel(),_this.userName,_this.password,_this.userID)).then(data => {
 						var [error, res] = data;
 						console.log('ResearchDeliBill.data:' + JSON.stringify(data));
 						console.log('ResearchDeliBill.res:' + JSON.stringify(res));

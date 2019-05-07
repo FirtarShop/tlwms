@@ -99,147 +99,36 @@ export default {
 		},
 		//扫描拣货码
 		scanPackege: function(res) {
-			if (this.isCanOutlibrary) {
-				this.resetScanPackege();
-			} else {
-				var _this = this;
-				uni.scanCode({
-					onlyFromCamera: true,
-					success: function(res) {
-						console.log('res' + JSON.stringify(res));
-						if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-							var code = res.result;
-							checkPickGoodsCode(res.result, _this.userName, _this.password, _this.userID).then(data => {
-								var [error, res] = data;
-								var result = parseForRule(res.data);
-								console.log('result:' + JSON.stringify(result));
-								console.log('data:' + JSON.stringify(data));
-								console.log('res:' + JSON.stringify(res));
-								if (result.success) {
-									if (_this.materials.judgeCommonPackege(res.result)) {
-										getPickGoodsCodeInfo(code, _this.userName, _this.password, _this.userID).then(data => {
-											var [error, res] = data;
-											console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-											console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
-											var result = parseForRule(res.data);
-											console.log('result:' + JSON.stringify(result));
-											if (result && !isEmptyObject(result)) {
-												_this.currentSteps = 1;
-												console.log('测:' + JSON.stringify(result));
-												_this.materials.setPackege(result);
-											} else {
-												uni.showModal({
-													title: '提示',
-													content: '没有获取到拣货码信息，请检查拣货码',
-													showCancel: false,
-													success: function(res) {
-														if (res.confirm) {
-															console.log('用户点击确定');
-														}
-													}
-												});
-											}
-										});
-									} else {
-										uni.showModal({
-											title: '提示',
-											content: res.result + '包装码已经扫描过！',
-											showCancel: false,
-											success: function(res) {
-												if (res.confirm) {
-													console.log('用户点击确定');
-												}
-											}
-										});
-									}
-								} else {
-									console.log('res.result:' + JSON.stringify(res.result));
-									uni.showModal({
-										title: '提示',
-										showCancel: false,
-										content: result.ResponseText,
-										success: function(res) {
-											if (res.confirm) {
-												console.log('用户点击确定');
-											}
-										}
-									});
-								}
-							});
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '拣货码错误,请重新扫描；'
-							});
-						}
-					}
-				});
-			}
-		},
-		resetScanPackege: function(res) {
 			var _this = this;
-			uni.showModal({
-				title: '提示',
-				content: '是否放弃当前拣货码，重新扫描拣货码',
+			uni.scanCode({
+				onlyFromCamera: true,
 				success: function(res) {
-					if (res.confirm) {
-						_this.initPackege();
-						uni.scanCode({
-							onlyFromCamera: true,
-							success: function(res) {
-								console.log('res' + JSON.stringify(res));
-								if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
-									var code = res.result;
-									checkPickGoodsCode(res.result, _this.userName, _this.password, _this.userID).then(data => {
+					console.log('res' + JSON.stringify(res));
+					if (res && res.result && res.result != '' && res.result.indexOf('PGC') != '-1') {
+						var code = res.result;
+						checkPickGoodsCode(res.result, _this.userName, _this.password, _this.userID).then(data => {
+							var [error, res] = data;
+							var result = parseForRule(res.data);
+							console.log('result:' + JSON.stringify(result));
+							console.log('data:' + JSON.stringify(data));
+							console.log('res:' + JSON.stringify(res));
+							if (result.success) {
+								if (_this.materials.judgeCommonPackege(res.result)) {
+									getPickGoodsCodeInfo(code, _this.userName, _this.password, _this.userID).then(data => {
 										var [error, res] = data;
+										console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
+										console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
 										var result = parseForRule(res.data);
 										console.log('result:' + JSON.stringify(result));
-										console.log('data:' + JSON.stringify(data));
-										console.log('res:' + JSON.stringify(res));
-										if (result.success) {
-											if (_this.materials.judgeCommonPackege(res.result)) {
-												getPickGoodsCodeInfo(code, _this.userName, _this.password, _this.userID).then(data => {
-													var [error, res] = data;
-													console.log('getPickGoodsCodeInfo.data:' + JSON.stringify(data));
-													console.log('getPickGoodsCodeInfo.res:' + JSON.stringify(res));
-													var result = parseForRule(res.data);
-													console.log('result:' + JSON.stringify(result));
-													if (result && !isEmptyObject(result)) {
-														_this.currentSteps = 1;
-														console.log('测:' + JSON.stringify(result));
-														_this.materials.setPackege(result);
-													} else {
-														uni.showModal({
-															title: '提示',
-															content: '没有获取到拣货码信息，请检查拣货码',
-															showCancel: false,
-															success: function(res) {
-																if (res.confirm) {
-																	console.log('用户点击确定');
-																}
-															}
-														});
-													}
-												});
-											} else {
-												uni.showModal({
-													title: '提示',
-													content: res.result + '包装码已经扫描过！',
-													showCancel: false,
-													success: function(res) {
-														if (res.confirm) {
-															console.log('用户点击确定');
-														}
-													}
-												});
-											}
+										if (result && !isEmptyObject(result)) {
+											_this.currentSteps = 1;
+											console.log('测:' + JSON.stringify(result));
+											_this.materials.setPackege(result);
 										} else {
-											console.log('res.result:' + JSON.stringify(res.result));
 											uni.showModal({
 												title: '提示',
+												content: '没有获取到拣货码信息，请检查拣货码',
 												showCancel: false,
-												content: result.ResponseText,
 												success: function(res) {
 													if (res.confirm) {
 														console.log('用户点击确定');
@@ -249,15 +138,37 @@ export default {
 										}
 									});
 								} else {
-									uni.showToast({
-										icon: 'none',
-										duration: 2500,
-										title: '拣货码错误,请重新扫描；'
+									uni.showModal({
+										title: '提示',
+										content: res.result + '包装码已经扫描过！',
+										showCancel: false,
+										success: function(res) {
+											if (res.confirm) {
+												console.log('用户点击确定');
+											}
+										}
 									});
 								}
+							} else {
+								console.log('res.result:' + JSON.stringify(res.result));
+								uni.showModal({
+									title: '提示',
+									showCancel: false,
+									content: result.ResponseText,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+										}
+									}
+								});
 							}
 						});
-					} else if (res.cancel) {
+					} else {
+						uni.showToast({
+							icon: 'none',
+							duration: 2500,
+							title: '拣货码错误,请重新扫描；'
+						});
 					}
 				}
 			});
