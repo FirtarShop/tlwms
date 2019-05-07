@@ -45,7 +45,8 @@ const zhongtaiModel = {
 	generateModel(){
 		var model=new Object();
 		console.log("BillNum:"+this.BillNum)
-		model.BillNum=this.BillNum
+		model.BillNum=this.BillNum;
+		model.ShQty=this.Qty;
 		return model;
 	}
 	}

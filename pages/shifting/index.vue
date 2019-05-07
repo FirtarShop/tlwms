@@ -2,14 +2,22 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-bind:disabled="currentSteps != 0" v-on:click="scanMaterial"><text>扫码物料码</text></button>
-			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码出库库位码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 0" v-on:click="scanWarehouse"><text>扫码出库库位码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanMaterial"><text>扫码物料码</text></button>
 			<button type="primary" v-bind:disabled="currentSteps != 2" v-on:click="scanWarehouses"><text>扫码入库库位码</text></button>
-			<view v-if="material.id.length > 0">
+			<!-- <button type="primary" v-bind:disabled="currentSteps != 0" v-on:click="scanMaterial"><text>扫码物料码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanWarehouse"><text>扫码出库库位码</text></button>
+			<button type="primary" v-bind:disabled="currentSteps != 2" v-on:click="scanWarehouses"><text>扫码入库库位码</text></button> -->
+			<view v-if="material.code.length > 0">
 				<view class="uni-card">
 					<view class="uni-card__header">
 						<view class="uni-card__header-title-text">{{ material.code }}</view>
-						<view class="uni-card__header-extra-text">{{ material.totalAmount }}</view>
+						<view class="uni-card__header-extra-text">
+							{{ material.totalAmount }}
+							<!-- <view v-if="material.id === 'null'"> -->
+								<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification">修改</span>
+								<!-- </view> -->
+						</view>
 					</view>
 					<view class="uni-card__content uni-card__content--pd">
 						<view class="wxc-list">
@@ -32,8 +40,16 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认移库</button>
-		<!-- 	<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button> -->
+			<!-- 	<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button> -->
 			<button type="primary" v-show="currentSteps == 4" @click="goBack">返回</button>
+			<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
+				<view style="min-height: 90upx;padding: 32upx 24upx;">
+					<view style="text-align: center;">
+						请输入个数
+						<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
+					</view>
+				</view>
+			</neil-modal>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
@@ -44,20 +60,23 @@
 <script>
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/moveInlibraryModel.js';
+import neilModal from '@/components/neil-modal/neil-modal.vue';
 import { addUserParam, authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
-import { checkLocal, saveMateMoveInfo } from '@/api/inlibrary.js';
+import { checkLocal, saveMateMoveInfo, getLocalMateList } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
 	data() {
 		return {
+			show: false,
+			inputNumber: 12,
 			material: inlibraryModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
 				{
-					title: '扫物料码'
+					title: '扫出库库位码'
 				},
 				{
-					title: '扫出库库位码'
+					title: '扫物料码'
 				},
 				{
 					title: '扫入库库位码'
@@ -119,8 +138,8 @@ export default {
 								}
 							});
 						} else {
-							if (_this.material.setMateriaInfo(result)) {
-								_this.currentSteps = 1;
+							if (_this.material.setMateriaInfo(result,true)) {
+								_this.currentSteps = 2;
 							} else {
 								uni.showToast({
 									icon: 'none',
@@ -150,15 +169,35 @@ export default {
 					console.log('result' + JSON.stringify(result));
 					console.log('checkLocal.data:' + JSON.stringify(_this.material.code));
 					if (result && result.codeid && result.codeid != '') {
-						if (_this.material.addStorage(result)) {
-							_this.currentSteps = 2;
-						} else {
-							uni.showToast({
-								icon: 'none',
-								duration: 2500,
-								title: '库位信息错误：' + JSON.stringify(result)
-							});
-						}
+						getLocalMateList(result.codeid, _this.userName, _this.password, _this.userID).then(data => {
+							var [error, res] = data;
+							console.log('getLocalMateList.data:' + JSON.stringify(data));
+							console.log('getLocalMateList.res:' + JSON.stringify(res));
+							var checkResult = parseForRule(res.data);
+							console.log('getLocalMateList.checkResult:' + JSON.stringify(checkResult));
+							if (checkResult && !isEmptyObject(checkResult)) {
+								if (checkResult.total == 1) {
+									_this.currentSteps = 2;
+									_this.material.setMateriaInfo(checkResult.data[0],false);
+									_this.material.addStorage(result);
+								} else {
+									_this.material.addStorage(result);
+									_this.currentSteps = 1;
+								}
+							} else {
+								uni.showModal({
+									title: '提示',
+									content: '没有查询出物料信息',
+									showCancel: false,
+									success: function(res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+											return;
+										}
+									}
+								});
+							}
+						});
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -178,7 +217,7 @@ export default {
 					console.log('res' + JSON.stringify(res));
 					var result = parseWarehouseCode(res.result);
 					console.log('result' + JSON.stringify(result));
-					if (result && result.codeid && result.codeid != '' && result.code != _this.material.code) {
+					if (result && result.codeid && result.codeid != '') {
 						checkLocal(_this.material.code, result.codeid, _this.userName, _this.password, _this.userID).then(data => {
 							var [error, res] = data;
 							console.log('checkLocal22.data:' + JSON.stringify(data));
@@ -247,6 +286,32 @@ export default {
 					});
 				}
 			});
+		},
+		//修改出库数量
+		modification: function() {
+			try {
+				console.log(this.inputNumber);
+				this.inputNumber = this.material.totalAmount;
+				this.show = true;
+			} catch (e) {
+				console.log('异常：' + JSON.stringify(e));
+			}
+
+			console.log('modification:end');
+		},
+		//关闭弹框事件
+		closeModificationModal: function(data) {
+			this.show = false;
+		},
+		//修改个数
+		modifierNumber: function(ref) {
+			console.log('修改后的值：' + this.inputNumber);
+			try {
+				this.material.totalAmount=this.inputNumber;
+			} catch (e) {
+				console.log('异常：' + JSON.stringify(e));
+			}
+			this.show = false;
 		},
 		//返回
 		goBack: function() {

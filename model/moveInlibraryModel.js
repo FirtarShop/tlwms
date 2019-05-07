@@ -17,7 +17,6 @@ const inlibraryModel = {
 	code: "", //物料code
 	codeid: "", //物料codeid
 	totalAmount: 0, //总货物
-	goods: [], //物料入库货物
 	storage: null,
 	inStorage: null,
 	//重置函数
@@ -26,30 +25,34 @@ const inlibraryModel = {
 		this.code="";
 		this.codeid="";
 		this.totalAmount=0;
-		this.goods=[];
 		this.storage=null;
 		this.inStorage= null;
 	},
 	//设置物料信息
-	setMateriaInfo: function(data) {
-		if (!data || !data.id || data.id == "") {
-			return false;
-		}
+	setMateriaInfo: function(data,flag) {
+		console.log("setMateriaInfo入参："+JSON.stringify(data))
 		try {
-			this.id = data.id;
-			this.code = data.code;
-			this.codeid = data.codeid;
-			this.totalAmount = this.totalAmount + data.count;
-			this.goods.push(data.count);
-			return true;
-
+			if(flag){
+				this.id = data.id;
+				this.code = data.code;
+				this.codeid = data.codeid;
+				this.totalAmount = this.totalAmount + data.count;
+				return true;	
+			}
+			else{
+				this.id = "null";
+				this.code = data.MNumber;
+				this.codeid = data.MName;
+				this.totalAmount = this.totalAmount + data.EndQuan;
+				return true;
+			}
 		} catch (e) {
 			return false;
 		}
 
 	},
 		//判断是否重复扫描统一库位
-		judgeCommonStorage: function(data) {
+	judgeCommonStorage: function(data) {
 		var result = false;
 		try {
 			for (var i = 0; i < this.BzBarCodes.length; i++) {
@@ -66,7 +69,7 @@ const inlibraryModel = {
 	},
 	//物料出库
 	addStorage: function(data) {
-		console.log("data:"+JSON.stringify(data))
+		console.log("addStorage:入参:"+JSON.stringify(data))
 		if (!data || !data.id || data.id == "") {
 			return false;
 		}
@@ -82,7 +85,7 @@ const inlibraryModel = {
 		}
 	},
 	//物料入库
-		addStorages: function(data) {
+	addStorages: function(data) {
 		if (!data || !data.id || data.id == "") {
 			return false;
 		}

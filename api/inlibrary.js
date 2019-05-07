@@ -83,3 +83,18 @@ export const saveMateMoveInfo = (data) => {
 		data: data,
 	});
 }
+
+
+/**
+ * @description 扫描库位，获取库位中相关物料信息区别于11接口
+ * 用于移库前扫描库位码，获取对应库位中的物料信息。
+ */
+export const getLocalMateList = (LocalID,userName,password,userID) => {
+	console.log("getLocalMateList:入参:"+LocalID);
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateList&&LocalID='+LocalID+"&UserName="+userName+"&Password="+password+"&UserID="+userID
+	});
+}
+
+
+

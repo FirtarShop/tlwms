@@ -81,3 +81,19 @@ export const checkPickGoodsCode = (BillNum,userName,password,userID) => {
 		url: domian + 'common/wms_Server_Data.asp?action=CheckPickGoodsCode'+"&BillNums="+BillNum+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
+
+/**
+ * @description 平面库扫描出库
+ * 系统根据发货需求，如果物料存放在平面库时，
+ * 系统自动生成平面库拣货码，平面库拣货码除了需要扫描拣货码内容外
+ * ，还需要扫描物料码（物料码为唯一，有物料标识后缀）
+ */
+export const surePmkStockOut = (data) => {
+	console.log("SurePmkStockOut入参：" + JSON.stringify(data))
+	return uni.request({
+		url: domian + 'common/wms_Server_Data.asp?action=SurePmkStockOut',
+		type: "GET",
+		dataType: "JSON",
+		data:data
+	});
+}
