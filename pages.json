@@ -68,6 +68,12 @@
 			}
 		},
 		{
+			"path": "pages/outlibrary/index3",
+			"style": {
+				"navigationBarTitleText": "平面库出库"
+			}
+		},
+		{
 			"path": "pages/outlibrary/index2",
 			"style": {
 				"navigationBarTitleText": "生成装车单"
