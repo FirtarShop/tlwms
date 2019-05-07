@@ -42,18 +42,18 @@
 			<button type="primary" v-bind:disabled="!sureInlibrarys" @click="sureInlibrary">确认移库</button>
 			<!-- 	<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button> -->
 			<button type="primary" v-show="currentSteps == 4" @click="goBack">返回</button>
-			<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
-				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">
-						请输入个数
-						<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
-					</view>
-				</view>
-			</neil-modal>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
 		</view>
+		<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
+			<view style="min-height: 90upx;padding: 32upx 24upx;">
+				<view style="text-align: center;">
+					请输入个数
+					<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
+				</view>
+			</view>
+		</neil-modal>
 	</view>
 </template>
 
@@ -92,6 +92,7 @@ export default {
 		this.material.reset();
 	},
 	components: {
+		neilModal,
 		uniSteps,
 		uniCard,
 		uniList,

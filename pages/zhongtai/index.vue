@@ -23,25 +23,25 @@
 			<button type="primary" v-bind:disabled="!sureOutlibrarys" @click="sureOutlibrary">确认收货</button>
 			<button type="default" v-show="isReseatPage" @click="resetPage">返回扫描</button>
 			<button type="primary" v-show="currentSteps == 2" @click="goBack">返回</button>
-			<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
-				<view style="min-height: 90upx;padding: 32upx 24upx;">
-					<view style="text-align: center;">
-						请输入个数
-						<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
-					</view>
-				</view>
-			</neil-modal>
 			<!-- <button type="primary"  @click="logMessage">
 				浏览器打印
 			</button> -->
 		</view>
+		<neil-modal :show="show" title="修改提示" @close="closeModificationModal" @confirm="modifierNumber('modifierNumber')">
+			<view style="min-height: 90upx;padding: 32upx 24upx;">
+				<view style="text-align: center;">
+					请输入个数
+					<input type="number" step="0.0000000001" v-enter-number v-model="inputNumber" placeholder="输入个数...." />
+				</view>
+			</view>
+		</neil-modal>
 	</view>
 </template>
 
 <script>
+import neilModal from '@/components/neil-modal/neil-modal.vue';
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import zhongtaiModel from '@/model/zhongtaiModel.js';
-import neilModal from '@/components/neil-modal/neil-modal.vue';
 import { addUserParam, authAccount, parseForRule, isEmptyObject } from '@/libs/util.js';
 import { getPickGoodsCodeInfo, ZoteRecGoods } from '@/api/zhongtai.js';
 import { mapState } from 'vuex';
@@ -67,6 +67,7 @@ export default {
 		this.materials.reset();
 	},
 	components: {
+		neilModal,
 		uniSteps,
 		uniCard,
 		uniList,
