@@ -4,7 +4,7 @@
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
 			<button type="primary" v-bind:disabled="!scanMaterials" v-on:click="scanMaterial"><text>扫拣货码</text></button>
 			<view v-if="materials.materials.length > 0">
-				<view class="uni-card" v-for="material in materials.materials" v-bind:key="material.BillNum">
+				<view class="uni-card" v-for="(material, index)  in materials.materials" v-bind:key="material.BillNum">
 					<view class="">
 						<view class="wxc-list-extra">id:{{ material.TlJpdID }}</view>
 						<view class="wxc-list-extra">单号:{{ material.OperBillNum }}</view>
@@ -15,7 +15,7 @@
 						<view class="wxc-list-extra">出库单包装:{{ material.OutPackage }}</view>
 						<view class="wxc-list-extra">
 							出库数量:{{ material.Qty }}
-							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification">修改</span>
+							<span style="margin: 5upx; font-size: 30upx; color: #0079FF;" @click="modification(index)">修改</span>
 						</view>
 					</view>
 				</view>
@@ -50,6 +50,7 @@ export default {
 		return {
 			show: false,
 			inputNumber: 12,
+			currentIndex: 0, //当前需要修改数量的货物索引
 			materials: zhongtaiModel,
 			currentSteps: 0, //当前执行步骤，
 			steps: [
@@ -182,10 +183,12 @@ export default {
 			debugger;
 		},
 		//修改出库数量
-		modification: function() {
+		modification: function(index) {
 			try {
 				console.log(this.inputNumber);
-				this.inputNumber = this.materials.Qty;
+				console.log(JSON.stringify(this.materials));
+				this.inputNumber = this.materials.materials[index].Qty;
+				this.currentIndex = index;
 				this.show = true;
 			} catch (e) {
 				console.log('异常：' + JSON.stringify(e));
@@ -201,7 +204,7 @@ export default {
 		modifierNumber: function(ref) {
 			console.log('修改后的值：' + this.inputNumber);
 			try {
-				this.materials.Qty=this.inputNumber;
+				this.materials.modifierNumber(this.currentIndex, this.inputNumber);
 			} catch (e) {
 				console.log('异常：' + JSON.stringify(e));
 			}
