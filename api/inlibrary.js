@@ -92,7 +92,7 @@ export const saveMateMoveInfo = (data) => {
 export const getLocalMateList = (LocalID,userName,password,userID) => {
 	console.log("getLocalMateList:入参:"+LocalID);
 	return uni.request({
-		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateList&&LocalID='+LocalID+"&UserName="+userName+"&Password="+password+"&UserID="+userID
+		url: domian + 'common/wms_Server_Data.asp?action=GetLocalMateList&LocalID='+LocalID+"&UserName="+userName+"&Password="+password+"&UserID="+userID
 	});
 }
 
