@@ -5,6 +5,7 @@
 const outlibraryModel = {
 	id:"",//物料ID
 	code:"",//物料code
+	codeFlag:"",//物料标志
 	codeid:"",//物料codeid
 	totalAmount:0,//总货物
 	goods:[],//物料入库货物
@@ -26,6 +27,7 @@ const outlibraryModel = {
 		this.code="";
 		this.codeid="";
 		this.totalAmount=0;
+		this.codeFlag="";
 		this.goods=[];
 		
 		this.TlJpdID="";
@@ -50,8 +52,8 @@ const outlibraryModel = {
 		this.codeid=data.codeid;
 		this.totalAmount=this.totalAmount+data.count;
 		this.goods.push(data.count);
-			return true;
-		
+		this.codeFlag=data.code.split("|")[1];
+		return true;
 		} catch (e) {
 			return false;
 		}

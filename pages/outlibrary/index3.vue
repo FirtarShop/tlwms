@@ -19,7 +19,7 @@
 				<view class="uni-card" v-if="material.id.length > 0">
 					<view class="">
 						<view class="wxc-list-extra">物料编码:{{ material.code }}</view>
-						<view class="wxc-list-extra">物料标志:{{ material.codeid }}</view>
+						<view class="wxc-list-extra">物料标志:{{ material.codeFlag }}</view>
 					</view>
 				</view>
 			</view>
