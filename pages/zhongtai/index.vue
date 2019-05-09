@@ -92,7 +92,7 @@ export default {
 		},
 		//是否重置页面
 		isReseatPage() {
-			if (this.currentSteps == 1) {
+			if (this.currentSteps >=1) {
 				return true;
 			} else {
 				return false;
@@ -158,7 +158,7 @@ export default {
 					console.log('正确');
 					uni.showToast({
 						icon: 'success',
-						title: '出库成功！'
+						title: '完成收货！'
 					});
 				} else {
 					console.log('错误');
