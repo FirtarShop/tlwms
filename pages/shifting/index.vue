@@ -61,7 +61,7 @@
 import { uniSteps, uniCard, uniList, uniListItem } from '@dcloudio/uni-ui';
 import inlibraryModel from '@/model/moveInlibraryModel.js';
 import neilModal from '@/components/neil-modal/neil-modal.vue';
-import { addUserParam, authAccount, parseForRule, parseWarehouseCode } from '@/libs/util.js';
+import { addUserParam, authAccount, parseForRule, parseWarehouseCode,isEmptyObject } from '@/libs/util.js';
 import { checkLocal, saveMateMoveInfo, getLocalMateList } from '@/api/inlibrary.js';
 import { mapState } from 'vuex';
 export default {
