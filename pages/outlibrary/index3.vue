@@ -246,7 +246,6 @@ export default {
 				console.log('res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
 				console.log('result:' + JSON.stringify(result));
-				result.success=true;
 				if (result.success) {
 					console.log(result);
 					_this.currentSteps = 3;
