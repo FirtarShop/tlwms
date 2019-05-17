@@ -25,7 +25,7 @@ export const saveStockInForBad = (data) => {
     console.log("saveStockInForBad 入参："+JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveStockInForBad',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});

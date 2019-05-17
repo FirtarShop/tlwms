@@ -25,7 +25,7 @@ export const ZoteRecGoods = (data) => {
     console.log("ZoteRecGoods 入参："+JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=ZoteRecGoods',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});

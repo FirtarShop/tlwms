@@ -13,7 +13,7 @@ export const saveEmergentOutInfo = (data) => {
 	console.log("saveEmergentOutInfo入参：" + JSON.stringify(data))
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveEmergentOutInfo',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data,
 	});
@@ -61,7 +61,7 @@ export const bulidFcd = (data) => {
 	console.log("bulidFcd入参：" + JSON.stringify(data))
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=BulidFcd',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data:data
 	});
@@ -92,7 +92,7 @@ export const surePmkStockOut = (data) => {
 	console.log("SurePmkStockOut入参：" + JSON.stringify(data))
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SurePmkStockOut',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data:data
 	});

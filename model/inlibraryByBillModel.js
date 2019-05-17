@@ -151,9 +151,10 @@ const inlibraryModel = {
 			BzQtys = BzQtys + item.BzQty + "|";
 		}
 		model.BzQtys = BzQtys.trim("").substr(0, BzQtys.length - 1);
-		var result="";
-		result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes+"&BzQtys="+model.BzQtys;
-		return result;
+		//var result="";
+		//result="&BillNum="+model.BillNum+"&MNumber="+model.MNumber+"&Quan="+model.Quan+"&LocalID="+model.LocalID +"&BzBarCodes="+model.BzBarCodes+"&BzQtys="+model.BzQtys;
+		//	return result;
+		return model;
 	}
 };
 //导出对象

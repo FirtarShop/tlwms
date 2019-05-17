@@ -12,7 +12,7 @@ export const getStockList = (data) => {
 	console.log("getStockList:入参 :" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=GetStockList',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});

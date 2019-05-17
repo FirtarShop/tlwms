@@ -27,7 +27,7 @@ export const saveAssemInInfo = (data) => {
 	console.log("saveAssemInInfo:入参 :"+ JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveAssemInInfo',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});
@@ -41,7 +41,7 @@ export const saveAssemOutInfo = (data) => {
 	console.log("saveAssemOutInfo:入参 :"+ JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SaveAssemOutInfo',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});

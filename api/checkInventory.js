@@ -11,7 +11,7 @@ export const savePackageInfo = (data) => {
 	console.log("savePackageInfo入参:" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=SavePackageInfo',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 		
@@ -30,7 +30,7 @@ export const bulidBzd = (data) => {
 	console.log("bulidBzd入参:" + JSON.stringify(data));
 	return uni.request({
 		url: domian + 'common/wms_Server_Data.asp?action=BulidBzd',
-		type: "GET",
+		type: "POST",
 		dataType: "JSON",
 		data: data
 	});
@@ -47,8 +47,19 @@ export const saveLogisInfo = (PackNum,InOutFlag,ArriAdds,userName,password,userI
 	console.log("saveLogisInfo入参:userName" + userName);
 	console.log("saveLogisInfo入参:password" + password);
 	console.log("saveLogisInfo入参:userID" + userID);
+	var data={};
+	data["PackNum"]=PackNum;
+	data["InOutFlag"]=InOutFlag;
+	data["ArriAdds"]=ArriAdds;
+	data["UserName"]=userName;
+	data["Password"]=password;
+	data["UserID"]=userID;
+	console.log("data:"+JSON.stringify(data));
 	return uni.request({
-		url: domian + '/common/wms_Server_Data.asp?action=SaveLogisInfo'+"&PackNum="+PackNum+"&InOutFlag="+ InOutFlag+"&ArriAdds="+ArriAdds+"&UserName"+userName+"&Password="+password+"&UserID="+userID
+		url: domian + '/common/wms_Server_Data.asp?action=SaveLogisInfo',
+	    type: "POST",
+	    dataType: "JSON",
+	    data: data
 	});
 }
 
