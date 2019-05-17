@@ -19,7 +19,8 @@
 						<view class="wxc-card_list_content_text">是否扫描:{{ item.IsScan}}</view>
 					</view>
 					<view class="wxc-card_list_content">
-						<view class="wxc-card_list_content_text">包装数量:{{item.BzQty}}</view>
+						<view class="wxc-card_list_content_text">发货数量:{{ item.Qty}}</view>
+						<view class="wxc-card_list_content_text">实收数量:{{item.ShQty}}</view>
 					</view>
 				</view>
 				<view>

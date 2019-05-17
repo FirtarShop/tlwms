@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="example">
 			<uni-steps :data="steps" :active="currentSteps - 1"></uni-steps>
-			<button type="primary" v-on:click="scanPackege"><text>扫拣货码</text></button>
+			<button type="primary" v-on:click="scanPackege" v-bind:disabled="currentSteps != 0"><text>扫拣货码</text></button>
 			<button type="primary" v-bind:disabled="currentSteps != 1" v-on:click="scanMaterial"><text>扫物料码</text></button>
 			<view v-if="material.TlJpdID.length > 0">
 				<view class="uni-card">
@@ -24,8 +24,8 @@
 				</view>
 			</view>
 			<button type="primary" v-bind:disabled="!isCanOut" @click="sureOutlibrary">确认出库</button>
-			<button type="default" v-bind:disabled="!isReseatPage" @click="reset">返回扫描</button>
-			<button type="default" v-show="currentSteps == 3" @click="goBack">返回</button>
+			<!-- <button type="default" v-bind:disabled="!isReseatPage" @click="reset">返回扫描</button>
+			<button type="default" v-show="currentSteps == 3" @click="goBack">返回</button> -->
 		</view>
 	</view>
 </template>
@@ -88,9 +88,9 @@ export default {
 		},
 		//扫描拣货码
 		scanPackege: function(res) {
-			if (this.currentSteps >= 1) {
-				this.resetScanPackege();
-			}
+			// if (this.currentSteps >= 1) {
+			// 	this.resetScanPackege();
+			// } else {
 			var _this = this;
 			uni.scanCode({
 				onlyFromCamera: true,
@@ -105,21 +105,21 @@ export default {
 							var result = parseForRule(res.data);
 							console.log('result:' + JSON.stringify(result));
 							if (result && !isEmptyObject(result)) {
-								if (result.Status && result.Status == '已出库') {
-									uni.showModal({
-										title: '提示',
-										content: '拣货码已经出库',
-										showCancel: false,
-										success: function(res) {
-											if (res.confirm) {
-												console.log('用户点击确定');
-											}
-										}
-									});
-								} else {
-									_this.currentSteps = 1;
-									_this.material.setPackege(result);
-								}
+								// if (result.Status && result.Status == '已出库') {
+								// 	uni.showModal({
+								// 		title: '提示',
+								// 		content: '拣货码已经出库',
+								// 		showCancel: false,
+								// 		success: function(res) {
+								// 			if (res.confirm) {
+								// 				console.log('用户点击确定');
+								// 			}
+								// 		}
+								// 	});
+								// } else {
+								_this.currentSteps = 1;
+								_this.material.setPackege(result);
+								//}
 							} else {
 								uni.showModal({
 									title: '提示',
@@ -142,6 +142,7 @@ export default {
 					}
 				}
 			});
+			//}
 		},
 		resetScanPackege: function(res) {
 			var _this = this;
@@ -245,6 +246,7 @@ export default {
 				console.log('res:' + JSON.stringify(res));
 				var result = parseForRule(res.data);
 				console.log('result:' + JSON.stringify(result));
+				result.success=true;
 				if (result.success) {
 					console.log(result);
 					_this.currentSteps = 3;
@@ -253,6 +255,7 @@ export default {
 						icon: 'success',
 						title: '出库成功！'
 					});
+					_this.reset();
 				} else {
 					console.log('错误');
 					uni.showModal({
